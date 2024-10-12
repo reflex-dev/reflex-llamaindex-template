@@ -56,12 +56,11 @@ def chat() -> rx.Component:
 
 def action_bar() -> rx.Component:
     return rx.box(
-        rx.box(
+        rx.form(
             rx.el.input(
                 placeholder="Ask anything",
-                on_blur=State.set_question,
-                id="input1",
-                class_name="box-border bg-slate-3 px-4 py-2 pr-14 rounded-full w-full outline-none focus:outline-accent-10 h-[48px] text-slate-12 placeholder:text-slate-9",
+                name="question",
+                class_name="box-border bg-slate-3 px-4 py-2 pr-14 rounded-full w-full outline-none focus:outline-accent-10 h-[48px] text-slate-12 placeholder:text-slate-9 peer",
             ),
             rx.el.button(
                 rx.cond(
@@ -74,13 +73,12 @@ def action_bar() -> rx.Component:
                     ),
                     rx.icon(tag="arrow-up", size=19, color="white"),
                 ),
-                on_click=[State.answer, rx.set_value("input1", "")],
-                class_name="top-1/2 right-4 absolute bg-accent-9 hover:bg-accent-10 disabled:hover:bg-accent-9 opacity-65 disabled:opacity-50 p-1.5 rounded-full transition-colors -translate-y-1/2 cursor-pointer disabled:cursor-default",
-                disabled=rx.cond(
-                    State.processing | (State.question == ""), True, False
-                ),
+                class_name="top-1/2 right-4 absolute bg-accent-9 hover:bg-accent-10 disabled:hover:bg-accent-9 opacity-65 disabled:opacity-50 peer-placeholder-shown:opacity-50 p-1.5 rounded-full transition-colors -translate-y-1/2 cursor-pointer disabled:cursor-default peer-placeholder-shown:cursor-default",
+                disabled=rx.cond(State.processing, True, False),
             ),
+            on_submit=State.answer,
             class_name="relative w-full",
+            reset_on_submit=True,
         ),
         # Made with Reflex link
         made_with_reflex(),
