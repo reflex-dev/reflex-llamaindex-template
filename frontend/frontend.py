@@ -21,7 +21,7 @@ def index() -> rx.Component:
         rx.box(
             reset(),
             settings_icon(),
-            class_name="top-4 right-4 absolute flex flex-row items-center gap-3.5",
+            class_name="top-4 right-4 z-50 absolute flex flex-row items-center gap-3.5",
         ),
         # Main content
         rx.box(
@@ -31,7 +31,7 @@ def index() -> rx.Component:
             chat(),
             # Action bar
             action_bar(),
-            class_name="relative flex flex-col justify-between gap-20 mx-auto px-6 pt-16 lg:pt-6 pb-6 max-w-4xl h-screen",
+            class_name="relative flex flex-col justify-between gap-10 lg:gap-20 mx-auto px-6 pt-16 lg:pt-6 pb-6 max-w-4xl h-screen",
         ),
         accent_color=SettingsState.color,
     )
