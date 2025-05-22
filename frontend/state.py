@@ -2,10 +2,9 @@ import asyncio
 import json
 import os
 import uuid
-
 import httpx
 import reflex as rx
-from openai import AsyncOpenAI
+
 
 class SettingsState(rx.State):
     # The accent color for the app
@@ -16,8 +15,6 @@ class SettingsState(rx.State):
 
 
 class State(rx.State):
-    # The current question being asked.
-    question: str
 
     # Whether the app is processing a question.
     processing: bool = False
@@ -27,7 +24,15 @@ class State(rx.State):
 
     user_id: str = str(uuid.uuid4())
 
-    async def answer(self):
+    async def answer(self, payload: dict[str, str]):
+
+        # Add the question to the chat history
+        question = payload["question"]
+
+        # If empty return
+        if question == "":
+            return
+
         # Set the processing state to True.
         self.processing = True
         yield
@@ -42,16 +47,10 @@ class State(rx.State):
                 {"role": "assistant", "content": chat_history_tuple[1]}
             )
 
-        self.chat_history.append((self.question, ""))
-
-        # Clear the question input.
-        question = self.question
-        self.question = ""
+        self.chat_history.append((question, ""))
 
         # Yield here to clear the frontend input before continuing.
         yield
-
-        
         client = httpx.AsyncClient()
 
         # call the agentic workflow
@@ -77,32 +76,8 @@ class State(rx.State):
                 answer[: i + 1],
             )
             yield
-        
-
-        # Add to the answer as the chatbot responds.
-        answer = ""
-        yield
-
-        async for item in session:
-            if hasattr(item.choices[0].delta, "content"):
-                if item.choices[0].delta.content is None:
-                    break
-                answer += item.choices[0].delta.content
-                self.chat_history[-1] = (self.chat_history[-1][0], answer)
-                yield
-
-        # Ensure the final answer is added to chat history
-        if answer:
-            self.chat_history[-1] = (self.chat_history[-1][0], answer)
-            yield
-
         # Set the processing state to False.
         self.processing = False
-
-    async def handle_key_down(self, key: str):
-        if key == "Enter":
-            async for t in self.answer():
-                yield t
 
     def clear_chat(self):
         # Reset the chat history and processing state
