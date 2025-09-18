@@ -5,7 +5,7 @@ import uuid
 
 import httpx
 import reflex as rx
-from openai import AsyncOpenAI
+
 
 class SettingsState(rx.State):
     # The accent color for the app
@@ -13,6 +13,14 @@ class SettingsState(rx.State):
 
     # The font family for the app
     font_family: str = "Poppins"
+
+    @rx.event
+    def set_color(self, color: str):
+        self.color = color
+
+    @rx.event
+    def set_font_family(self, font_family: str):
+        self.font_family = font_family
 
 
 class State(rx.State):
@@ -26,6 +34,10 @@ class State(rx.State):
     chat_history: list[tuple[str, str]] = []
 
     user_id: str = str(uuid.uuid4())
+
+    @rx.event
+    def set_question(self, question: str):
+        self.question = question
 
     async def answer(self):
         # Set the processing state to True.
@@ -51,7 +63,6 @@ class State(rx.State):
         # Yield here to clear the frontend input before continuing.
         yield
 
-        
         client = httpx.AsyncClient()
 
         # call the agentic workflow
@@ -77,7 +88,6 @@ class State(rx.State):
                 answer[: i + 1],
             )
             yield
-        
 
         # Add to the answer as the chatbot responds.
         answer = ""

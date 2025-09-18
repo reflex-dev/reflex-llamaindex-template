@@ -6,13 +6,17 @@ config = rx.Config(
     api_url="http://localhost:9000",
     backend_port=9000,
     deployment_name="deployment",
-    tailwind={
-        "darkMode": "class",
-        "theme": {
-            "colors": {
-                **create_colors_dict(),
-            },
-        },
-    },
-    plugins=[rx.plugins.TailwindV3Plugin()],
+    plugins=[
+        rx.plugins.SitemapPlugin(),
+        rx.plugins.TailwindV3Plugin(
+            {
+                "darkMode": "class",
+                "theme": {
+                    "colors": {
+                        **create_colors_dict(),
+                    },
+                },
+            }
+        ),
+    ],
 )

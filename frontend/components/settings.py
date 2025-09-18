@@ -5,14 +5,11 @@ from frontend.components.hint import hint
 
 
 def color_item(color: str) -> rx.Component:
-
     return rx.box(
         rx.box(
             rx.cond(
                 SettingsState.color == color,
-                rx.icon(
-                    tag="check", size=13, stroke_width="2.5", color="white"
-                ),
+                rx.icon(tag="check", size=13, stroke_width="2.5", color="white"),
                 rx.fragment(),
             ),
             class_name="flex justify-center items-center rounded-full w-5 h-5 shrink-0",
@@ -50,7 +47,6 @@ def font_item(font: str) -> rx.Component:
 
 
 def settings_icon() -> rx.Component:
-
     colors = ["violet", "amber", "green", "blue", "orange", "red"]
     fonts = ["Instrument Sans", "Poppins", "Inter", "Lato", "Roboto", "Open Sans"]
 
@@ -134,6 +130,6 @@ def settings_icon() -> rx.Component:
             align="center",
             avoid_collisions=True,
             class_name="items-center bg-transparent !shadow-none !p-0 border-none w-[254px] overflow-visible",
-            font_family="var(--font-family)"
+            font_family="var(--font-family)",
         ),
     )
